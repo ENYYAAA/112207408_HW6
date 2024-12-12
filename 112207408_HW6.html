@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>112207408_HW6_1A2B</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .result {
+            margin-top: 20px;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        .game-record {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>112207408_HW6_1A2B</h1>
+    <input id="guess" type="text" placeholder="輸入不重複之四位數字" maxlength="4">
+    <button onclick="guess()">猜!</button>
+    <div class="game-record" id="gameRecord"></div>
+    <div class="result" id="results"></div>
+
+    <script>
+        const answer = [];
+        const numPool = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let attempts = 0;
+        let gameWon = false;
+
+       
+        while (answer.length < 4) {
+            const randomIndex = Math.floor(Math.random() * numPool.length);
+            answer.push(numPool.splice(randomIndex, 1)[0]);
+        }
+
+        function guess() {
+            if (gameWon) {
+                alert("遊戲已完成！最後結果是 4A0B。");
+                return;
+            }
+
+            const guessInput = document.getElementById("guess").value;
+
+
+            const gameRecordDiv = document.getElementById("gameRecord");
+            if (attempts === 0) {
+                gameRecordDiv.innerHTML = "<h2>遊戲紀錄</h2>";
+            }
+
+            if (!validateGuess(guessInput)) {
+                alert("請輸入不重複之四位數字");
+                return;
+            }
+
+            const guessArray = guessInput.split("").map(Number);
+            let a = 0, b = 0;
+
+            for (let i = 0; i < 4; i++) {
+                if (answer.includes(guessArray[i])) {
+                    if (answer[i] === guessArray[i]) {
+                        a++;
+                    } else {
+                        b++;
+                    }
+                }
+            }
+
+            attempts++;
+            const result = `${a}A${b}B`;
+            document.getElementById("results").innerHTML += `<p>第${attempts}次：${guessInput} --> ${result}</p>`;
+
+            if (result === "4A0B") {
+                alert(`恭喜答對！你總共嘗試了 ${attempts} 次！`);
+                gameWon = true;
+            }
+
+            document.getElementById("guess").value = ""; 
+        }
+
+        function validateGuess(guess) {
+            if (guess.length !== 4 || isNaN(guess)) return false;
+            const digits = guess.split("");
+            return new Set(digits).size === 4;
+        }
+
+    </script>
+</body>
+</html>
